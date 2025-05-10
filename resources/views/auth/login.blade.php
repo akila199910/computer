@@ -1,73 +1,132 @@
-@extends('layouts.app')
+@extends('layouts.auth')
+
+@section('title')
+    Login
+@endsection
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+    <div class="col-lg-6 login-wrap">
+        <div class="login-sec">
+            <div class="log-img">
+                <img class="img-fluid" src="{{ asset('layout_style/img/login.png') }}" alt="Logo">
+            </div>
+        </div>
+    </div>
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+    <div class="col-lg-6 login-wrap-bg">
+        <div class="login-wrapper">
+            <div class="loginbox">
+                <div class="login-right">
+                    <div class="login-right-wrap">
+                        <div class="account-logo">
+                            <a href="javascript:;"><img src="{{ asset('layout_style/img/asset_logo.png') }}" alt style="height: 80px"></a>
+                            {{-- <h1 class="text-uppercase text-primary-emphasis" style="font-weight: 900">{{env('APP_NAME')}}</h1> --}}
                         </div>
+                        <h2>Login</h2>
 
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                        <form method="POST" class="text-left" id="submitForm" enctype="multipart/form-data">
+                            @csrf
+                            <div class="input-block">
+                                <label>Email <span class="login-danger">*</span></label>
+                                <input class="form-control email lock-icon-field" name="email" id="email"
+                                    placeholder="e.g example@gmail.com" type="text">
+                                <span class="user-icon fa fa-user"></span>
+                                {{-- <span class="email-icon fa fa-envelope"></span> --}}
                             </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
+                            <div class="input-block">
+                                <small class="text-danger err_email"></small>
+                            </div>
+                            <div class="input-block">
+                                <label>Password <span class="login-danger">*</span></label>
+                                <input class="form-control pass-input password lock-icon-field" type="password" id="password" name="password"
+                                    placeholder="********">
+                                <span class="lock-icon feather-lock"></span>
+                                {{-- <span class="profile-views feather-eye-off toggle-password"></span> --}}
+                            </div>
+                            <div class="input-block">
+                                <small class="text-danger err_password"></small>
+                            </div>
+                             <!-- Show Password Toggle -->
+                             <div class="remember-me show-password">
+                                <label class="custom_check mr-2 mb-0 d-inline-flex remember-me">
+                                    Show Password
+                                    <input type="checkbox" name="radio"  class= "toggle-password" onclick="togglePassword()">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                            <div class="forgotpass">
+                                <div class="remember-me">
+                                    <!--
+                                        <label class="custom_check mr-2 mb-0 d-inline-flex remember-me">
+                                            Remember me
+                                            <input type="checkbox" name="radio">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    -->
                                 </div>
+                                <a href="">Forgot Password?</a>
                             </div>
-                        </div>
-
-                        <div class="row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
+                            <div class="input-block login-btn">
+                                <button class="btn btn-primary btn-block" type="submit">Login</button>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+@endsection
+
+@section('scripts')
+    <script>
+        $('#submitForm').submit(function(e) {
+            e.preventDefault();
+            let formData = new FormData($('#submitForm')[0]);
+
+            $.ajax({
+                type: "POST",
+                beforeSend: function() {
+                    $('#loader').show()
+                },
+                url: "{{ route('login') }}",
+                data: formData,
+                dataType: "JSON",
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function(response) {
+                    $('#loader').hide()
+                    console.log(response);
+                    clearError();
+
+                    if (response.status == false) {
+                        $.each(response.errors, function(key, item) {
+                            if (key) {
+                                $('.err_' + key).text(item);
+                                $('.' + key).addClass('border-danger');
+                            }
+                        });
+                    } else {
+                        location.href = response.route;
+                    }
+                },
+                error: function(data) {
+                    console.log(data);
+                    $('#loader').hide()
+                    alert('Something went to wrong')
+                }
+            });
+        });
+
+        function clearError() {
+            $('.err_email').text('');
+            $('.email').removeClass('border-danger');
+
+            $('.err_password').text('');
+            $('.password').removeClass('border-danger');
+        }
+
+
+
+    </script>
 @endsection
