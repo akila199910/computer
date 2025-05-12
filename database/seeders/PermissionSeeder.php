@@ -17,21 +17,21 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         //
-        // $action = ['Read', 'Create' , 'Update' , 'Delete'];
-        // $permissions = ['Business','Business_User', 'User','Admin','Inventory','Inventory_Category','Inventory_Sub_Category','Asset','Employee','Asset_Handling','Report','Department','Category','Sub_Category'];
+        $action = ['Read', 'Create' , 'Update' , 'Delete'];
+        $permissions = ['Reception', 'Manager', 'Technician', 'Customer', 'Order', 'Category', 'Brand','Product'];
 
-        // $insert_data = [];
-        // foreach ($permissions as $key => $value) {
-        //     foreach ($action as $act_key => $act_value) {
-        //         $insert_data[] = [
-        //             'name' => $act_value . "_" . $value,
-        //             'guard_name' => 'web',
-        //             'created_at' => date("Y-m-d H:i:s"),
-        //             'updated_at' => date("Y-m-d H:i:s"),
-        //         ];
-        //     }
-        // }
+        $insert_data = [];
+        foreach ($permissions as $key => $value) {
+            foreach ($action as $act_key => $act_value) {
+                $insert_data[] = [
+                    'name' => $act_value . "_" . $value,
+                    'guard_name' => 'web',
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'updated_at' => date("Y-m-d H:i:s"),
+                ];
+            }
+        }
 
-        // DB::table('permissions')->insert($insert_data);
+        DB::table('permissions')->insert($insert_data);
     }
 }

@@ -55,7 +55,7 @@ class UserSeeder extends Seeder
             $admin->assignRole('super_admin');
 
             //Give Permission
-            // $admin->givePermissionTo($permissions);
+            $admin->givePermissionTo($permissions);
         }
     }
 

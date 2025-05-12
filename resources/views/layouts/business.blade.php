@@ -64,23 +64,6 @@
             <a id="mobile_btn" class="mobile_btn float-start" href="#sidebar"><img
                     src="{{ asset('layout_style/img/icons/menu-bar.svg') }}" style="width:24px" alt></a>
 
-            @if (Auth::user()->hasRole('super_admin') || Auth::user()->hasRole('admin')||Auth::user()->hasRole('business_user'))
-                <div class="top-nav-search mob-view">
-                    <form>
-                        <select class="form-control js-example-basic-single select2" id="change_dashboard"
-                            placeholder="Search here">
-                            <option value="">-- Select the Business --</option>
-                            @foreach ($businesses as $item)
-                                <option value="{{ $item->id }}"
-                                    {{ $item->id == session()->get('_business_id') ? 'selected' : '' }}>
-                                    {{ $item->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </form>
-                </div>
-            @endif
-
             <ul class="nav user-menu float-end">
                 <li class="nav-item dropdown has-arrow user-profile-list">
                     <a href="#" class="dropdown-toggle nav-link user-link" data-bs-toggle="dropdown">
@@ -93,7 +76,7 @@
                         </span>
                     </a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{{ route('business.profile') }}">My Profile</a>
+                        <a class="dropdown-item" href="">My Profile</a>
                         <a class="dropdown-item" href="{{ route('logout') }}"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                     </div>
@@ -127,7 +110,7 @@
                         <li class="menu-title">{{ session()->get('_business_name') }}</li>
 
                         <li>
-                            <a href="{{ route('business.dashboard') }}"
+                            <a href="{{ route('dashboard') }}"
                                class="{{ request()->route()->getName() == 'business.dashboard' ? 'active' : '' }}">
                                 <span class="menu-side">
                                     <img src="{{ asset('layout_style/img/icons/dashboard_admin.png') }}" style="width: 24px" alt>
@@ -137,249 +120,35 @@
                         </li>
 
 
-                        @if (Auth::user()->hasPermissionTo('Read_Department'))
-                        <li>
-                            <a href="{{ route('business.department') }}"
-                               class="{{ request()->routeIs('business.department*') ? 'active' : '' }}">
-                                <span class="menu-side">
-                                    <img src="{{ asset('layout_style/img/icons/department.png') }}" style="width: 24px" alt>
-                                </span>
-                                <span>Departments</span>
-                            </a>
-                        </li>
-                    @endif
+                        @if (Auth::user()->hasAnyPermission(['Read_Reception', 'Read_Manager','Read_Technician','Read_Customer']))
+                            <li>
+                                <a href="{{ route('business.users') }}">
+                                    <span class="menu-side">
+                                        <img src="{{ asset('layout_style/img/icons/user.png') }}" style="width: 24px" alt>
+                                    </span>
+                                    <span>Users Management</span>
+                                </a>
+                            </li>
+                        @endif
 
 
 
-                    @if (Auth::user()->hasPermissionTo('Read_User'))
+
+                    {{-- @if (Auth::user()->hasPermissionTo('Read_User')) --}}
                     <li>
-                        <a href="{{ route('business.users') }}"
-                           class="{{ request()->routeIs('business.user*') ? 'active' : '' }}">
+                        <a href=""
+                           class="">
                             <span class="menu-side">
                                 <img src="{{ asset('layout_style/img/icons/user.png') }}" style="width: 24px" alt>
                             </span>
                             <span>Users</span>
                         </a>
                     </li>
-                @endif
-
-                @if (Auth::user()->hasPermissionTo('Read_Employee'))
-                <li>
-                    <a href="{{ route('business.employee') }}"
-                       class="{{ request()->routeIs('business.employee*') ? 'active' : '' }}">
-                        <span class="menu-side">
-                            <img src="{{ asset('layout_style/img/icons/user-group.png') }}" style="width: 24px" alt>
-                        </span>
-                        <span>Employees</span>
-                    </a>
-                </li>
-            @endif
-
-                        @if (Auth::user()->hasPermissionTo('Read_Asset_Handling'))
-                        @php
-                            $asset_handling_route_name = [
-                                'business.asset_handle.index',
-                                'business.asset_handle.create.form',
-                                'business.asset_handle.update.form',
-                                'business.asset_handle.view_details',
-                            ];
-                        @endphp
-
-                        <li>
-                            <a href="{{ route('business.asset_handle') }}"
-                            class="{{ request()->routeIs('business.asset_handle*') ? 'active' : '' }}">
-                            <span class="menu-side">
-                                    <img src="{{ asset('layout_style/img/icons/asset_handling2.png') }}" style="width: 24px"
-                                        alt>
-                                </span>
-                                <span>Assets Handling</span>
-                            </a>
-                        </li>
-
-                    @endif
-                    {{-- <li class="submenu">
-                        <li class="submenu">
-                            @php
-
-
-                            $inventory_categories_route_name = [
-                                'business.inventory_category',
-                                'business.inventory_category.create.form',
-                                'business.inventory_category.update.form',
-                                'business.inventory_category.view_details',
-                            ];
-
-                            $inventory_sub_categories_route_name = [
-                                'business.inventory_sub_category',
-                                'business.inventory_sub_category.create.form',
-                                'business.inventory_sub_category.update.form',
-                                'business.inventory_sub_category.view_details',
-                            ];
-
-                            $inventories_route_name = [
-                                'business.inventory',
-                                'business.inventory.create.form',
-                                'business.inventory.update.form',
-                                'business.inventory.view_details',
-                            ];
-
-                        @endphp
-                        @if (Auth::user()->hasPermissionTo('Read_Inventory_Category')||Auth::user()->hasPermissionTo('Read_Inventory_Sub_Category')||Auth::user()->hasPermissionTo('Read_Inventory'))
-                        <a href="javascript:;"><span class="menu-side">
-                                <img src="{{ asset('layout_style/img/icons/inventory.png') }}"
-                                    style="width: 24px" alt></span>
-                            <span> Inventories </span> <span class="menu-arrow"></span></a>
-
-                        <ul style="display: none;">
-                            @if (Auth::user()->hasPermissionTo('Read_Inventory_Category'))
-                            <li>
-                                <a href="{{ route('business.inventory_category') }}"
-                                    class="{{ in_array(request()->route()->getName(), $inventory_categories_route_name) ? 'active' : '' }}">
-                                    <span>Inventory Categories</span>
-                                </a>
-                            </li>
-                            @endif
-                            @if (Auth::user()->hasPermissionTo('Read_Inventory_Sub_Category'))
-                            <li>
-                                <a href="{{ route('business.inventory_sub_category') }}"
-                                    class="{{ in_array(request()->route()->getName(), $inventory_sub_categories_route_name) ? 'active' : '' }}">
-                                    <span>Inventory Sub Categories</span>
-                                </a>
-                            </li>
-                            @endif
-                            @if (Auth::user()->hasPermissionTo('Read_Inventory'))
-                            <li>
-                                <a href="{{ route('business.inventory') }}"
-                                    class="{{ in_array(request()->route()->getName(), $inventories_route_name) ? 'active' : '' }}">
-                                    <span>Inventories</span>
-                                </a>
-                            </li>
-                            @endif
-
-                        </ul>
-                    </li>
-                    @endif --}}
-
-                        <li class="submenu">
-
-                            <li class="submenu">
-                                @php
-                                    $categories_route_name = [
-                                        'business.category',
-                                        'business.category.create.form',
-                                        'business.category.update.form',
-                                        'business.category.view_details',
-                                    ];
-
-                                    $sub_categories_route_name = [
-                                        'business.sub_category',
-                                        'business.sub_category.create.form',
-                                        'business.sub_category.update.form',
-                                        'business.sub_category.view_details',
-                                    ];
-
-                                    $assets_route_name = [
-                                        'business.asset',
-                                        'business.asset.create.form',
-                                        'business.asset.update.form',
-                                        'business.asset.view_details',
-                                    ];
-
-                                @endphp
-
-                                @if (Auth::user()->hasPermissionTo('Read_Category')||Auth::user()->hasPermissionTo('Read_Sub_Category')||Auth::user()->hasPermissionTo('Read_Asset'))
-                                <a href="javascript:;"><span class="menu-side">
-                                        <img src="{{ asset('layout_style/img/icons/inventory.png') }}"
-                                            style="width: 24px" alt></span>
-                                    <span> Assets </span> <span class="menu-arrow"></span></a>
-
-                                <ul style="display: none;">
-                                    @if (Auth::user()->hasPermissionTo('Read_Category'))
-                                    <li>
-                                        <a href="{{ route('business.category') }}"
-                                            class="{{ in_array(request()->route()->getName(), $categories_route_name) ? 'active' : '' }}">
-                                            <span>Categories</span>
-                                        </a>
-                                    </li>
-                                    @endif
-                                    @if (Auth::user()->hasPermissionTo('Read_Sub_Category'))
-                                    <li>
-                                        <a href="{{ route('business.sub_category') }}"
-                                            class="{{ in_array(request()->route()->getName(), $sub_categories_route_name) ? 'active' : '' }}">
-                                            <span>Sub Categories</span>
-                                        </a>
-                                    </li>
-                                    @endif
-                                    @if (Auth::user()->hasPermissionTo('Read_Asset'))
-                                    <li>
-                                        <a href="{{ route('business.asset') }}"
-                                            class="{{ in_array(request()->route()->getName(), $assets_route_name) ? 'active' : '' }}">
-                                            <span>Assets</span>
-                                        </a>
-                                    </li>
-                                    @endif
-                                </ul>
-                                @endif
-                            </li>
-                        <li class="submenu">
-                            @php
-                            $handling_report_route_name = [
-                                'business.report',
-                                'business.report.export',
-
-                            ];
-                            $asset_report_route_name=[
-                                'business.report.assets',
-                                'business.report.export.assets',
-                        ];
-                            @endphp
-                             @if (Auth::user()->hasPermissionTo('Read_Report'))
-                            <a href="javascript:;"><span class="menu-side">
-                                    <img src="{{ asset('layout_style/img/icons/stock.png') }}"
-                                        style="width: 24px" alt></span>
-                                <span> Reports </span> <span class="menu-arrow"></span></a>
-                            <ul style="display: none;">
-                                {{-- @if (Auth::user()->hasPermissionTo('Read_Report')) --}}
-                                <li>
-                                    <a href="{{ route('business.report') }}"
-                                        class="{{ in_array(request()->route()->getName(), $handling_report_route_name) ? 'active' : '' }}">
-                                        <span>Asset Handling</span>
-                                    </a>
-                                </li>
-                                {{-- @endif --}}
-                                {{-- @if (Auth::user()->hasPermissionTo('Read_Report')) --}}
-                                <li>
-                                    <a href="{{ route('business.report.assets') }}"
-                                        class="{{ in_array(request()->route()->getName(), $asset_report_route_name) ? 'active' : '' }}">
-                                        <span>Asset Details</span>
-                                    </a>
-                                </li>
-                                {{-- @endif --}}
-                            </ul>
-                            @endif
-                        </li>
-                        @php
-                            $profile_route_name = [
-                                'business.profile',
-                                'business.profile_update',
-                                'business.password_update',
-                            ];
-                        @endphp
-
-                        <li>
-                            <a href="{{ route('business.profile') }}"
-                            class="{{ request()->routeIs('business.profile*') ? 'active' : '' }}">
-                            <span class="menu-side">
-                                    <img src="{{ asset('layout_style/img/icons/profile.png') }}" style="width: 24px"
-                                        alt>
-                                </span>
-                                <span>Profile</span>
-                            </a>
-                        </li>
+                {{-- @endif --}}
 
 
 
-                    </ul>
+            </ul>
 
                     <div class="logout-btn">
                         <a href="{{ route('logout') }}"
@@ -481,51 +250,6 @@
             }
         });
 
-        $(document).ready(function() {
-            $('.select2').select2()
-
-            $('#change_dashboard').change(function(e) {
-                e.preventDefault();
-                var id = $(this).val()
-
-                if (id != '') {
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-
-                    var data = {
-                        'id': id
-                    }
-                    $('#loader').show()
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ route('admin.business.move_dashboard') }}",
-                        data: data,
-                        dataType: "JSON",
-                        success: function(response) {
-                            $('#loader').hide()
-                            location.href = "{{ route('business.dashboard') }}";
-
-                        },
-                        statusCode: {
-                            401: function() {
-                                window.location.href =
-                                    '{{ route('login') }}'; //or what ever is your login URI
-                            },
-                            419: function() {
-                                window.location.href =
-                                    '{{ route('login') }}'; //or what ever is your login URI
-                            },
-                        },
-                        error: function(data) {
-                            alert('something went to wrong')
-                        }
-                    });
-                }
-            });
-        });
     </script>
 
 

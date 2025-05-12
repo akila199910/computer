@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Business\UserManagementController;
+use App\Http\Controllers\DashboardController;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -24,5 +27,19 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::middleware(['auth', 'UserExist'])->group(function () {
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::middleware(['super_admin'])->group(function () {
+
+        Route::get('/users', [UserManagementController::class, 'index'])->name('business.users');
+        Route::get('/users/create', [UserManagementController::class, 'create_form'])->name('business.users.create.form');
+        Route::post('/users/create', [UserManagementController::class, 'create'])->name('business.users.create');
+
+
+
+    });
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+
