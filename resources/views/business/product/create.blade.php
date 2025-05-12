@@ -182,6 +182,12 @@
                 $('#category_name').removeClass('is-invalid');
                 $('.err_category_name').text('');
 
+                $('#price').removeClass('is-invalid');
+                $('.err_price').text('');
+
+                $('#description').removeClass('is-invalid');
+                $('.err_description').text('');
+
                 $('#brand_name').removeClass('is-invalid');
                 $('.err_brand_name').text('');
 

@@ -1,7 +1,7 @@
 @extends('layouts.business')
 
 @section('title')
-    Manage Users
+    Manage Products
 @endsection
 
 @section('content')
@@ -9,13 +9,13 @@
         <div class="row">
             <div class="col-sm-8">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('business.users') }}">Manage Users </a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('business.product') }}">Manage Products </a></li>
                     <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                    <li class="breadcrumb-item active">Update User</li>
+                    <li class="breadcrumb-item active">Update Product</li>
                 </ul>
             </div>
             <div class="col-sm-4 text-end">
-                <a href="{{ route('business.users') }}" class="btn btn-primary btn-lg me-2" style='width:100px'>Back</a>
+                <a href="{{ route('business.product') }}" class="btn btn-primary btn-lg me-2" style='width:100px'>Back</a>
             </div>
         </div>
     </div>
@@ -29,43 +29,80 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-heading">
-                                    <h4>Update User</h4>
+                                    <h4>Update Product</h4>
                                 </div>
                             </div>
-                            <input type="hidden" name="id" value="{{ $user->id }}">
+
+                            <input type="hidden" name="id" value="{{ $product->id }}">
                             <div class="col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
-                                    <label>First Name <span class="login-danger">*</span></label>
-                                    <input type="text" name="first_name" class="form-control first_name " id="first_name"
-                                        maxlength="190" value="{{ Str::limit($user->first_name, 30) }}">
-                                    <small class="text-danger font-weight-bold err_first_name"></small>
+                                    <label>Product Name <span class="login-danger">*</span></label>
+                                    <input type="text" name="product_name" class="form-control" id="product_name"
+                                        maxlength="190" value="{{ Str::limit($product->name, 30) }}" title="{{ $product->name }}">
+                                    <small class="text-danger font-weight-bold err_product_name"></small>
                                 </div>
                             </div>
 
                             <div class="col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
-                                    <label>Last Name <span class="login-danger">*</span></label>
-                                    <input type="text" name="last_name" class="form-control last_name" id="last_name"
-                                        maxlength="190" value="{{ Str::limit($user->last_name, 30) }}">
-                                    <small class="text-danger font-weight-bold err_last_name"></small>
+                                    <label for="">Select Brand<span class="text-danger"> *</span></label>
+                                    <select class="form-control select2" name="brand_name" id="brand_name">
+                                        <option value="" disabled selected>-- Select Brand --</option>
+                                        @foreach ($brands as $brand)
+
+                                            <option value="{{ $brand->id }}" title="{{ $brand->name }}"
+                                                {{ $brand->id == $product->brand_id ? 'selected' : '' }}>
+                                                {{ Str::limit($brand->name,30) }}
+                                            </option>
+
+                                        @endforeach
+                                    </select>
+                                    <small class="text-danger font-weight-bold err_brand_name"></small>
                                 </div>
                             </div>
 
                             <div class="col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
-                                    <label>Email <span class="login-danger">*</span></label>
-                                    <input type="text" name="email" class="form-control email" id="email"
-                                        maxlength="190" value="{{ Str::limit($user->email, 30) }}">
-                                    <small class="text-danger font-weight-bold err_email"></small>
+                                    <label for="">Select Category<span class="text-danger"> *</span></label>
+                                    <select class="form-control select2" name="category_name" id="category_name">
+                                        <option value="" disabled selected>-- Select Category --</option>
+                                        @foreach ($categories as $item)
+
+                                            <option value="{{ $item->id }}" title="{{ $item->name }}"
+                                                {{ $item->id == $product->category_id ? 'selected' : '' }}>
+                                                {{ Str::limit($item->name,30) }}
+                                            </option>
+
+                                        @endforeach
+                                    </select>
+                                    <small class="text-danger font-weight-bold err_category_name"></small>
                                 </div>
                             </div>
 
                             <div class="col-12 col-md-6 col-xl-6">
                                 <div class="input-block local-forms">
-                                    <label>Contact <span class="login-danger">*</span></label>
-                                    <input type="text" name="contact" class="form-control contact number_only_val"
-                                        id="contact" maxlength="10" value="{{ $user->contact }}">
-                                    <small class="text-danger font-weight-bold err_contact"></small>
+                                    <label>Price <span class="login-danger"> *</span></label>
+                                    <input type="text" name="price" class="form-control number_only_val" id="price"
+                                        maxlength="190" value="{{ $product->price }}">
+                                    <small class="text-danger font-weight-bold err_price"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-xl-6">
+                                <div class="input-block local-forms">
+                                    <label for="">Upload Image </label>
+                                    <input type="file" class="form-control w-50" name="image" id="image" >
+                                    <small class="text-danger font-weight-bold err_image"></small>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-12 col-xl-12">
+                                <div class="input-block local-forms">
+                                    <label for="description">Description </label>
+                                    <textarea name="description" id="description" class="form-control description" rows="4">
+                                        {{ $product->description }}
+                                    </textarea>
+                                    <small class="text-danger font-weight-bold err_description"></small>
                                 </div>
                             </div>
 
@@ -74,68 +111,19 @@
                                     <label class="gen-label">Status Inactive/Active</label>
                                     <div class="status-toggle d-flex justify-content-between align-items-center">
                                         <input type="checkbox" id="status" name="status"
-                                            {{ $user->status == 1 ? 'checked' : '' }} class="check">
+                                            {{ $product->status == 1 ? 'checked' : '' }} class="check">
                                         <label for="status" class="checktoggle">checkbox</label>
                                     </div>
                                 </div>
                             </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="form-heading">
-                                    <h4>Give Permission</h4>
-                                </div>
-                            </div>
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                <div class="row">
-                                    @foreach ($permission_list as $premission => $action)
-
-                                        @foreach ($action as $act)
-
-                                            @php
-                                                $split_permission = explode('_', $act);
-                                                $final_action = implode('', $split_permission);
-                                                $final_action = Str::headline($final_action);
-                                        @endphp
-
-                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
-                                                <div class="profile-check-blk input-block">
-                                                    <div class="remember-me">
-                                                        <label class="custom_check mr-2 mb-0 d-inline-flex remember-me ">
-                                                            {{ $final_action }}
-                                                            <input type="checkbox" name="permissions[]"
-                                                                class="permissions_check"
-                                                                {{ in_array($act, $user_permission) ? 'checked' : '' }}
-                                                                id="{{ $act }}" data-action="{{ $act }}"
-                                                                data-permission="{{ $premission }}"
-                                                                value="{{ $act }}">
-                                                            <span class="checkmark"></span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    @endforeach
-                                </div>
-                                <small class="text-danger font-weight-bold err_permissions"></small>
-                            </div>
-
-                            @if (Auth::user()->hasPermissionTo('Update_User'))
-                                <div class="col-12">
-                                    <div class="doctor-submit text-end">
-                                        <button type="submit"
-                                            class="btn btn-primary text-uppercase submit-form me-2">Update</button>
+                                @if (Auth::user()->hasPermissionTo('Update_Product'))
+                                    <div class="col-12">
+                                        <div class="doctor-submit text-end">
+                                            <button type="submit"
+                                                class="btn btn-primary text-uppercase submit-form me-2">Update</button>
+                                        </div>
                                     </div>
-                                </div>
-                            @endif
+                                @endif
                         </div>
                     </div>
                 </div>
@@ -163,7 +151,7 @@
                     beforeSend: function() {
                         $('#loader').show()
                     },
-                    url: "{{ route('business.users.update') }}",
+                    url: "{{ route('business.product.update') }}",
                     data: formData,
                     dataType: "JSON",
                     contentType: false,
@@ -181,6 +169,9 @@
                                     $('#' + key).addClass('is-invalid');
                                 }
                             });
+                        }else if(response.status == "error") {
+                            errorPopup(response.message, "")
+
                         } else {
                             successPopup(response.message, response.route)
                         }
@@ -202,45 +193,23 @@
             });
 
             function clearError() {
-                $('#first_name').removeClass('is-invalid');
-                $('.err_first_name').text('');
+                $('#category_name').removeClass('is-invalid');
+                $('.err_category_name').text('');
 
-                $('#last_name').removeClass('is-invalid');
-                $('.err_last_name').text('');
+                $('#price').removeClass('is-invalid');
+                $('.err_price').text('');
 
-                $('#email').removeClass('is-invalid');
-                $('.err_email').text('');
+                $('#description').removeClass('is-invalid');
+                $('.err_description').text('');
 
-                $('#contact').removeClass('is-invalid');
-                $('.err_contact').text('');
+                $('#brand_name').removeClass('is-invalid');
+                $('.err_brand_name').text('');
 
-                $('.err_permissions').text('');
-            }
-
-        });
-
-
-        $('.permissions_check').change(function() {
-            if ($(this).is(':checked')) {
-                // Checkbox is checked
-                console.log('Checkbox is checked');
-                var permission = $(this).attr('data-permission');
-                console.log(permission);
-
-                $('#Read_' + permission).prop('checked', true)
-            } else {
-                // Checkbox is not checked
-                console.log('Checkbox is not checked');
-                var permission = $(this).attr('data-permission');
-                var action = $(this).attr('data-action');
-                console.log(action);
-                if (action == 'Read_' + permission) {
-                    $('#Create_' + permission).prop('checked', false);
-                    $('#Update_' + permission).prop('checked', false);
-                    $('#Delete_' + permission).prop('checked', false);
-                }
+                $('#image').removeClass('is-invalid');
+                $('.err_image').text('');
 
             }
+
         });
     </script>
 @endsection

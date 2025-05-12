@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Business;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Product;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -74,22 +75,22 @@ class ProductController extends Controller
                     }
                 })
                 ->addColumn('action', function ($item) {
-                    // $user = Auth::user();
-                    // $edit_url = route('business.users.update.form', $item->ref_no);
-                    // $view_url = route('business.users.view_details', $item->ref_no);
+                    $user = Auth::user();
+                    $edit_url = route('business.product.update.form', $item->ref_no);
+                    $view_url = route('business.product.view_details', $item->ref_no);
 
-                    // $actions = '';
-                    // $actions .= action_btns($actions, $user, 'User', $edit_url, $item->id,  $view_url);
+                    $actions = '';
+                    $actions .= action_btns($actions, $user, 'Product', $edit_url, $item->id,  $view_url);
 
-                    // $action = '<div class="dropdown dropdown-action">
-                    //     <a href="javascript:;" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    //         <i class="fa fa-ellipsis-v"></i>
-                    //     </a>
-                    // <div class="dropdown-menu dropdown-menu-end">'
-                    //     . $actions .
-                    //     '</div></div>';
+                    $action = '<div class="dropdown dropdown-action">
+                        <a href="javascript:;" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </a>
+                    <div class="dropdown-menu dropdown-menu-end">'
+                        . $actions .
+                        '</div></div>';
 
-                    return '';
+                    return $action;
                 })
                 ->rawColumns(['action', 'status', 'profile', 'name', 'brand', 'category'])
                 ->make(true);
@@ -144,5 +145,92 @@ class ProductController extends Controller
         $data['route'] = route('business.product');
 
         return response()->json($data);
+    }
+
+    public function update_form($id)
+    {
+        //Check User Permission
+        $user = Auth::user();
+        $check_premission = user_permission_check($user, 'Update_Product');
+
+        if ($check_premission == false) {
+            return abort(403);
+        }
+
+        $product = Product::where(['ref_no' => $id])->first();
+        $brands = Brand::where('status', 1)->get();
+        $categories = Category::where('status', 1)->get();
+
+
+        return view('business.product.update',[
+            'categories' => $categories,
+            'brands' => $brands,
+            'product' => $product
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        $id = $request->id;
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+            'brand_name' => 'required',
+            'category_name' => 'required',
+            'price' => 'required|numeric',
+            'image' => 'nullable|mimes:png,jpg,jpeg',
+            'description' => 'nullable|max:190',
+            'product_name' =>['required',
+                                'regex:/^[a-z A-Z]+$/u','max:30',
+                                Rule::unique('products', 'name')->ignore($id)->whereNull('deleted_at')
+                            ],
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false,  'message' => $validator->errors()]);
+        }
+
+        // if ($request->status == false) {
+
+        //     $product = Product::where('category_id', $id)->get();
+        //     if ($product->count() > 0) {
+        //         return response()->json([
+        //             'status' => "error",
+        //             'message' => 'Category is associated with products'
+        //         ]);
+        //     }
+        // }
+
+        $data = $this->product_repo->update_product($request);
+        $data['status'] = true;
+        $data['message'] = 'Product Updated Successfully!';
+        $data['route'] = route('business.product');
+
+        return response()->json($data);
+
+    }
+
+    public function view_details(Request $request, $ref_no)
+    {
+        //Check User Permission
+        $user = Auth::user();
+        $check_premission = user_permission_check($user, 'Read_Product');
+
+        if ($check_premission == false) {
+            return abort(403);
+        }
+        // End
+
+        $product = Product::Where(['ref_no' => $ref_no])->first();
+
+        if (!$product) {
+            return abort(404);
+        }
+
+        return view('business.product.view_details', [
+            'product' =>  $product
+        ]);
     }
 }

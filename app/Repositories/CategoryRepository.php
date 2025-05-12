@@ -53,8 +53,9 @@ class CategoryRepository
 
         }else{
 
-            if (!$category->image)
+            if (!$category->image){
                 $file = '';
+            }
             else
                 $file = $category->image;
         }
@@ -62,6 +63,7 @@ class CategoryRepository
         $category->name = $request->category_name;
         $category->brand_id = $request->brand_name;
         $category->status = $request->status == true ? 1 : 0;
+        $category->image = $file;
         $category->update();
 
 

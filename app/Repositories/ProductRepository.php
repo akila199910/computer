@@ -42,33 +42,39 @@ class ProductRepository
         ];
     }
 
-    // public function update_users($request)
-    // {
-    //     $user = User::find($request->id);
-    //     $user->first_name = $request->first_name;
-    //     $user->last_name = $request->last_name;
-    //     $user->name = ucwords($request->first_name.' '. $request->last_name);
-    //     $user->email = $request->email;
-    //     $user->contact = $request->contact;
-    //     $user->status = $request->status == true ? 1 : 0;
-    //     $user->update();
+    public function update_product($request)
+    {
+        $product = Product::find($request->id);
+        // dd($product);
+        $file = '';
+
+        if (isset($request->image) && $request->image->getClientOriginalName()) {
+
+            $file = file_upload($request->image, 'image');
+
+        }else{
+
+            if (!$product->image){
+                $file = '';
+            }
+            else
+                $file = $product->image;
+        }
+
+        $product->name = $request->product_name;
+        $product->category_id = $request->category_name;
+        $product->brand_id = $request->brand_name;
+        $product->status = $request->status == true ? 1 : 0;
+        $product->image = $file;
+        $product->price = $request->price;
+        $product->description = $request->description;
+        $product->update();
 
 
-    //     //Check permission available or not
-    //     if (isset($request->permissions) && !empty($request->permissions)) {
-    //         $user->syncPermissions($request->permissions);
-    //     }
-
-    //     return [
-    //         'id' => $user->id,
-    //         'first_name' => $user->first_name,
-    //         'last_name' => $user->last_name,
-    //         'full_name' => $user->name,
-    //         'contact' => $user->contact,
-    //         'email' => $user->email,
-    //         'profile' => config('constants.aws_url') . $user->UserProfile->profile
-    //     ];
-    // }
+        return [
+            'id' => $product->id,
+        ];
+    }
 
     // public function delete_user($request)
     // {

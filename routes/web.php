@@ -36,9 +36,10 @@ Route::middleware(['auth', 'UserExist'])->group(function () {
         Route::get('/users', [UserManagementController::class, 'index'])->name('business.users');
         Route::get('/users/create', [UserManagementController::class, 'create_form'])->name('business.users.create.form');
         Route::post('/users/create', [UserManagementController::class, 'create'])->name('business.users.create');
-
-
-
+        Route::get('/brands/update/{id}', [BrandController::class, 'update_form'])->name('business.brands.update.form');
+        Route::post('/brands/update', [BrandController::class, 'update'])->name('business.brands.update');
+        Route::post('/brands/delete', [BrandController::class, 'delete'])->name('business.brands.delete');
+        Route::get('/brands/view/{ref_no}', [BrandController::class, 'view_details'])->name('business.brands.view_details');
     });
 
     Route::get('/brands', [BrandController::class, 'index'])->name('business.brands');
@@ -62,6 +63,10 @@ Route::middleware(['auth', 'UserExist'])->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('business.product');
     Route::get('/products/create', [ProductController::class, 'create_form'])->name('business.product.create.form');
     Route::post('/products/create', [ProductController::class, 'create'])->name('business.product.create');
+    Route::get('/products/update/{id}', [ProductController::class, 'update_form'])->name('business.product.update.form');
+    Route::post('/products/update', [ProductController::class, 'update'])->name('business.product.update');
+    Route::post('/products/delete', [BrandController::class, 'delete'])->name('business.product.delete');
+    Route::get('/products/view/{ref_no}', [ProductController::class, 'view_details'])->name('business.product.view_details');
 
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
