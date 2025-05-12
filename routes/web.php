@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Business\BrandController;
+use App\Http\Controllers\Business\CategoryController;
 use App\Http\Controllers\Business\UserManagementController;
 use App\Http\Controllers\DashboardController;
 use App\Models\User;
@@ -38,6 +40,17 @@ Route::middleware(['auth', 'UserExist'])->group(function () {
 
 
     });
+
+    Route::get('/brands', [BrandController::class, 'index'])->name('business.brands');
+    Route::get('/brands/create', [BrandController::class, 'create_form'])->name('business.brands.create.form');
+    Route::post('/brands/create', [BrandController::class, 'create'])->name('business.brands.create');
+
+
+
+    Route::get('/categories', [CategoryController::class, 'index'])->name('business.category');
+    Route::get('/categories/create', [CategoryController::class, 'create_form'])->name('business.category.create.form');
+    Route::post('/categories/create', [CategoryController::class, 'create'])->name('business.category.create');
+
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });

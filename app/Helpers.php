@@ -128,6 +128,7 @@ if (!function_exists('action_buttons')) {
 
 if (!function_exists('refno_generate')) {
 
+
     function refno_generate($length, $type, $id)
     {
         // 0 = Digits

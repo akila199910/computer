@@ -131,20 +131,43 @@
                             </li>
                         @endif
 
+                        @if (Auth::user()->hasPermissionTo('Read_Brand'))
+                        <li>
+                            <a href="{{ route('business.brands') }}"
+                            class="">
+                                <span class="menu-side">
+                                    <img src="{{ asset('layout_style/img/icons/user.png') }}" style="width: 24px" alt>
+                                </span>
+                                <span>Brand</span>
+                            </a>
+                        </li>
+                        @endif
+
+                        @if (Auth::user()->hasPermissionTo('Read_Category'))
+                        <li>
+                            <a href="{{ route('business.category') }}"
+                            class="">
+                                <span class="menu-side">
+                                    <img src="{{ asset('layout_style/img/icons/user.png') }}" style="width: 24px" alt>
+                                </span>
+                                <span>Category</span>
+                            </a>
+                        </li>
+                        @endif
 
 
 
-                    {{-- @if (Auth::user()->hasPermissionTo('Read_User')) --}}
-                    <li>
-                        <a href=""
-                           class="">
-                            <span class="menu-side">
-                                <img src="{{ asset('layout_style/img/icons/user.png') }}" style="width: 24px" alt>
-                            </span>
-                            <span>Users</span>
-                        </a>
-                    </li>
-                {{-- @endif --}}
+                    @if (Auth::user()->hasPermissionTo('Read_Product'))
+                        <li>
+                            <a href=""
+                            class="">
+                                <span class="menu-side">
+                                    <img src="{{ asset('layout_style/img/icons/user.png') }}" style="width: 24px" alt>
+                                </span>
+                                <span>Product</span>
+                            </a>
+                        </li>
+                    @endif
 
 
 
