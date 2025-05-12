@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Business;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Product;
 use App\Repositories\BrandRepository;
 use Illuminate\Http\Request;
@@ -83,7 +84,7 @@ class BrandController extends Controller
 
                     return $action;
                 })
-                ->rawColumns(['action', 'status', 'profile', 'permissions'])
+                ->rawColumns(['action', 'status', 'profile', 'name'])
                 ->make(true);
 
             return $data;
@@ -175,10 +176,17 @@ class BrandController extends Controller
         if ($request->status == false) {
 
             $product = Product::where('brand_id', $id)->get();
+            $category = Category::where('brand_id', $id)->get();
             if ($product->count() > 0) {
                 return response()->json([
                     'status' => "error",
                     'message' => 'Brand is associated with products'
+                ]);
+            }
+            if($category->count() > 0){
+                return response()->json([
+                    'status' => "error",
+                    'message' => 'Brand is associated with categories'
                 ]);
             }
         }
@@ -192,5 +200,26 @@ class BrandController extends Controller
 
     }
 
+    public function view_details(Request $request, $ref_no)
+    {
+        //Check User Permission
+        $user = Auth::user();
+        $check_premission = user_permission_check($user, 'Read_Brand');
+
+        if ($check_premission == false) {
+            return abort(403);
+        }
+        // End
+
+        $brand = Brand::Where(['ref_no' => $ref_no])->first();
+
+        if (!$brand) {
+            return abort(404);
+        }
+
+        return view('business.brands.view_details', [
+            'brand' =>  $brand
+        ]);
+    }
 
 }

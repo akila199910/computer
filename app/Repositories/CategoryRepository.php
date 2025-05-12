@@ -41,53 +41,34 @@ class CategoryRepository
         ];
     }
 
-    // public function update_users($request)
-    // {
-    //     $user = User::find($request->id);
-    //     $user->first_name = $request->first_name;
-    //     $user->last_name = $request->last_name;
-    //     $user->name = ucwords($request->first_name.' '. $request->last_name);
-    //     $user->email = $request->email;
-    //     $user->contact = $request->contact;
-    //     $user->status = $request->status == true ? 1 : 0;
-    //     $user->update();
+    public function update_category($request)
+    {
+        $category = Category::find($request->id);
+
+        $file = '';
+
+        if (isset($request->image) && $request->image->getClientOriginalName()) {
+
+            $file = file_upload($request->image, 'image');
+
+        }else{
+
+            if (!$category->image)
+                $file = '';
+            else
+                $file = $category->image;
+        }
+
+        $category->name = $request->category_name;
+        $category->brand_id = $request->brand_name;
+        $category->status = $request->status == true ? 1 : 0;
+        $category->update();
 
 
-    //     //Check permission available or not
-    //     if (isset($request->permissions) && !empty($request->permissions)) {
-    //         $user->syncPermissions($request->permissions);
-    //     }
-
-    //     return [
-    //         'id' => $user->id,
-    //         'first_name' => $user->first_name,
-    //         'last_name' => $user->last_name,
-    //         'full_name' => $user->name,
-    //         'contact' => $user->contact,
-    //         'email' => $user->email,
-    //         'profile' => config('constants.aws_url') . $user->UserProfile->profile
-    //     ];
-    // }
-
-    // public function delete_user($request)
-    // {
-    //     $user = User::find($request->id);
-    //     $user_business = UserBusiness::where('user_id', $user->id)->first();
-
-    //     if (!$user) {
-    //         return [
-    //             'status' => false,
-    //             'message' => 'User Not Found'
-    //         ];
-    //     }
-
-    //     $user->delete();
-    //     $user_business->delete();
-
-    //     return [
-    //         'status' => true,
-    //         'message' => 'Selected User Deleted Successfully!'
-    //     ];
-    // }
-
+        return [
+            'id' => $category->id,
+            'brand_name' => $category->name,
+            'image' => $file
+        ];
+    }
 }

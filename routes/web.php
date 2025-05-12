@@ -53,6 +53,10 @@ Route::middleware(['auth', 'UserExist'])->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('business.category');
     Route::get('/categories/create', [CategoryController::class, 'create_form'])->name('business.category.create.form');
     Route::post('/categories/create', [CategoryController::class, 'create'])->name('business.category.create');
+    Route::get('/categories/update/{id}', [CategoryController::class, 'update_form'])->name('business.category.update.form');
+    Route::post('/categories/update', [CategoryController::class, 'update'])->name('business.category.update');
+    Route::post('/categories/delete', [CategoryController::class, 'delete'])->name('business.category.delete');
+    Route::get('/categories/view/{ref_no}', [CategoryController::class, 'view_details'])->name('business.category.view_details');
 
 
     Route::get('/products', [ProductController::class, 'index'])->name('business.product');
