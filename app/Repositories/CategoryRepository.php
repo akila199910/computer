@@ -69,25 +69,25 @@ class CategoryRepository
     //     ];
     // }
 
-    public function delete_user($request)
-    {
-        $user = User::find($request->id);
-        $user_business = UserBusiness::where('user_id', $user->id)->first();
+    // public function delete_user($request)
+    // {
+    //     $user = User::find($request->id);
+    //     $user_business = UserBusiness::where('user_id', $user->id)->first();
 
-        if (!$user) {
-            return [
-                'status' => false,
-                'message' => 'User Not Found'
-            ];
-        }
+    //     if (!$user) {
+    //         return [
+    //             'status' => false,
+    //             'message' => 'User Not Found'
+    //         ];
+    //     }
 
-        $user->delete();
-        $user_business->delete();
+    //     $user->delete();
+    //     $user_business->delete();
 
-        return [
-            'status' => true,
-            'message' => 'Selected User Deleted Successfully!'
-        ];
-    }
+    //     return [
+    //         'status' => true,
+    //         'message' => 'Selected User Deleted Successfully!'
+    //     ];
+    // }
 
 }

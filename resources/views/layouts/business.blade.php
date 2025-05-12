@@ -159,7 +159,7 @@
 
                     @if (Auth::user()->hasPermissionTo('Read_Product'))
                         <li>
-                            <a href=""
+                            <a href="{{ route('business.product') }}"
                             class="">
                                 <span class="menu-side">
                                     <img src="{{ asset('layout_style/img/icons/user.png') }}" style="width: 24px" alt>

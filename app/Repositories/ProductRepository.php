@@ -3,37 +3,42 @@
 namespace App\Repositories;
 
 use App\Models\Brand;
+use App\Models\Product;
 
-class BrandRepository
+class ProductRepository
 
 {
 
-    public function getBrands()
+    public function getProduct()
     {
-        return Brand::all();
+        return Product::all();
     }
-    public function create_brand($request)
+    public function create_product($request)
     {
         $file = 'user/user.png';
         if (isset($request->image) && $request->image->getClientOriginalName()) {
             $file = file_upload($request->image, 'image');
         }
 
-        $brand = new Brand();
-        $brand->name = $request->brand_name;
-        $brand->status = $request->status == true ? 1 : 0;
-        $brand->image = $file;
-        $brand->save();
+        $product = new Product();
+        $product->name = $request->product_name;
+        $product->brand_id = $request->brand_name;
+        $product->category_id = $request->category_name;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->status = $request->status == true ? 1 : 0;
+        $product->image = $file;
+        $product->save();
 
         //Generate Reference Number
-        $ref_no = refno_generate(16, 2, $brand->id);
-        $brand->ref_no = $ref_no;
-        $brand->update();
+        $ref_no = refno_generate(16, 2, $product->id);
+        $product->ref_no = $ref_no;
+        $product->update();
 
         return [
-            'id' => $brand->id,
-            'brand_name' => $brand->name,
-            'image' => $brand->image
+            'id' => $product->id,
+            'product_name' => $product->name,
+            'image' => $product->image
         ];
     }
 
