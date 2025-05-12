@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Business;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
+use App\Models\Product;
 use App\Repositories\BrandRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class BrandController extends Controller
 {
@@ -62,22 +65,23 @@ class BrandController extends Controller
                     }
                 })
                 ->addColumn('action', function ($item) {
-                    // $user = Auth::user();
-                    // $edit_url = route('business.users.update.form', $item->ref_no);
-                    // $view_url = route('business.users.view_details', $item->ref_no);
+                    $user = Auth::user();
+                    $edit_url = route('business.brands.update.form', $item->ref_no);
+                    $view_url = route('business.brands.view_details', $item->ref_no);
 
-                    // $actions = '';
-                    // $actions .= action_btns($actions, $user, 'User', $edit_url, $item->id,  $view_url);
+                    $actions = '';
+                    $actions .= action_btns($actions, $user, 'Brand', $edit_url, $item->id,  $view_url);
 
-                    // $action = '<div class="dropdown dropdown-action">
-                    //     <a href="javascript:;" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    //         <i class="fa fa-ellipsis-v"></i>
-                    //     </a>
-                    // <div class="dropdown-menu dropdown-menu-end">'
-                    //     . $actions .
-                    //     '</div></div>';
+                    $action = '<div class="dropdown dropdown-action">
+                        <a href="javascript:;" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </a>
+                    <div class="dropdown-menu dropdown-menu-end">'
+                        . $actions .
+                        '</div>
+                    </div>';
 
-                    return '';
+                    return $action;
                 })
                 ->rawColumns(['action', 'status', 'profile', 'permissions'])
                 ->make(true);
@@ -107,7 +111,7 @@ class BrandController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'brand_name' => 'required|regex:/^[a-z A-Z]+$/u|max:30',
+                'brand_name' => 'required|regex:/^[a-z A-Z]+$/u|unique:brands,name,NULL,id,deleted_at,NULL|max:30',
                 'image' => 'nullable|mimes:png,jpg,jpeg',
             ]
         );
@@ -125,4 +129,68 @@ class BrandController extends Controller
 
         return response()->json($data);
     }
+
+    public function update_form($id)
+    {
+        //Check User Permission
+        $user = Auth::user();
+        $check_premission = user_permission_check($user, 'Update_Brand');
+
+        if ($check_premission == false) {
+            return abort(403);
+        }
+
+        $brand = Brand::where(['ref_no' => $id])->first();
+
+        if (!$brand) {
+            return abort(404);
+        }
+
+        return view('business.brands.update',[
+            'brand' => $brand
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        $id = $request->id;
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+            'brand_name' => [
+                            'required',
+                            'regex:/^[a-z A-Z]+$/u',
+                            'max:30',
+                            Rule::unique('brands', 'name')->ignore($id)->whereNull('deleted_at'),
+                        ],
+            'image' => 'nullable|mimes:png,jpg,jpeg',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false,  'message' => $validator->errors()]);
+        }
+
+        if ($request->status == false) {
+
+            $product = Product::where('brand_id', $id)->get();
+            if ($product->count() > 0) {
+                return response()->json([
+                    'status' => "error",
+                    'message' => 'Brand is associated with products'
+                ]);
+            }
+        }
+
+        $data = $this->brand_repo->update_brand($request);
+        $data['status'] = true;
+        $data['message'] = 'Brand Updated Successfully!';
+        $data['route'] = route('business.brands');
+
+        return response()->json($data);
+
+    }
+
+
 }

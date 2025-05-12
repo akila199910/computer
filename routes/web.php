@@ -5,7 +5,6 @@ use App\Http\Controllers\Business\CategoryController;
 use App\Http\Controllers\Business\ProductController;
 use App\Http\Controllers\Business\UserManagementController;
 use App\Http\Controllers\DashboardController;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -45,7 +44,10 @@ Route::middleware(['auth', 'UserExist'])->group(function () {
     Route::get('/brands', [BrandController::class, 'index'])->name('business.brands');
     Route::get('/brands/create', [BrandController::class, 'create_form'])->name('business.brands.create.form');
     Route::post('/brands/create', [BrandController::class, 'create'])->name('business.brands.create');
-
+    Route::get('/brands/update/{id}', [BrandController::class, 'update_form'])->name('business.brands.update.form');
+    Route::post('/brands/update', [BrandController::class, 'update'])->name('business.brands.update');
+    Route::post('/brands/delete', [BrandController::class, 'delete'])->name('business.brands.delete');
+    Route::get('/brands/view/{ref_no}', [BrandController::class, 'view_details'])->name('business.brands.view_details');
 
 
     Route::get('/categories', [CategoryController::class, 'index'])->name('business.category');

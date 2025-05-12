@@ -37,33 +37,35 @@ class BrandRepository
         ];
     }
 
-    // public function update_users($request)
-    // {
-    //     $user = User::find($request->id);
-    //     $user->first_name = $request->first_name;
-    //     $user->last_name = $request->last_name;
-    //     $user->name = ucwords($request->first_name.' '. $request->last_name);
-    //     $user->email = $request->email;
-    //     $user->contact = $request->contact;
-    //     $user->status = $request->status == true ? 1 : 0;
-    //     $user->update();
+    public function update_brand($request)
+    {
+        $brand = Brand::find($request->id);
+
+        $file = '';
+
+        if (isset($request->image) && $request->image->getClientOriginalName()) {
+
+            $file = file_upload($request->image, 'image');
+
+        }else{
+
+            if (!$brand->image)
+                $file = '';
+            else
+                $file = $brand->image;
+        }
+
+        $brand->name = $request->brand_name;
+        $brand->status = $request->status == true ? 1 : 0;
+        $brand->update();
 
 
-    //     //Check permission available or not
-    //     if (isset($request->permissions) && !empty($request->permissions)) {
-    //         $user->syncPermissions($request->permissions);
-    //     }
-
-    //     return [
-    //         'id' => $user->id,
-    //         'first_name' => $user->first_name,
-    //         'last_name' => $user->last_name,
-    //         'full_name' => $user->name,
-    //         'contact' => $user->contact,
-    //         'email' => $user->email,
-    //         'profile' => config('constants.aws_url') . $user->UserProfile->profile
-    //     ];
-    // }
+        return [
+            'id' => $brand->id,
+            'brand_name' => $brand->name,
+            'image' => $file
+        ];
+    }
 
     // public function delete_user($request)
     // {
