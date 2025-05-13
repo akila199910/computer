@@ -128,7 +128,7 @@
                                 <small class="text-danger font-weight-bold err_permissions"></small>
                             </div>
 
-                            @if (Auth::user()->hasPermissionTo('Update_User'))
+                            @if (Auth::user()->hasAnyPermission(['Update_Reception', 'Update_Manager','Update_Technician','Update_Customer']))
                                 <div class="col-12">
                                     <div class="doctor-submit text-end">
                                         <button type="submit"

@@ -57,27 +57,50 @@ if (!function_exists('refno_generate')) {
 }
 
 if (!function_exists('action_btns')) {
-    function action_btns($action, $user, $permission, $edit_url, $route_id,  $view_url)
+    function action_btns($action, $user, $permission, $edit_url, $route_id, $view_url)
     {
-        if ($edit_url != '' && $user->hasPermissionTo('Update_' . $permission)) {
-            $action .= '<a class="dropdown-item" title="Edit" href="' . $edit_url . '"><i class="fa-solid fa-pen-to-square m-r-5"></i> Edit</a>';
-        }
+        if ($permission == 'User') {
+            $roles = ['Reception', 'Manager', 'Technician', 'Customer'];
 
-        if ($user->hasPermissionTo('Delete_' . $permission)) {
-            $action .= '<a class="dropdown-item" title="Delete" href="javascript:;" onclick="deleteConfirmation(' . $route_id . ')" data-id="' . $route_id . '"><i class="fa-solid fas fa-trash m-r-5"></i> Delete</a>';
-        }
+            foreach ($roles as $role) {
+                if ($edit_url != '' && $user->hasPermissionTo('Update_' . $role)) {
+                    $action .= '<a class="dropdown-item" title="Edit" href="' . $edit_url . '"><i class="fa-solid fa-pen-to-square m-r-5"></i> Edit</a>';
+                    break;
+                }
+            }
 
-        // if ($user->hasPermissionTo('Read_' . $permission) && $read_url != '') {
-        //     $action .= '<a class="dropdown-item" title="View" href="' . $read_url . '"><i class="fa-solid fa-eye m-r-5"></i> View</a>';
-        // }
+            foreach ($roles as $role) {
+                if ($user->hasPermissionTo('Delete_' . $role)) {
+                    $action .= '<a class="dropdown-item" title="Delete" href="javascript:;" onclick="deleteConfirmation(' . $route_id . ')" data-id="' . $route_id . '"><i class="fa-solid fas fa-trash m-r-5"></i> Delete</a>';
+                    break;
+                }
+            }
 
-        if ($user->hasPermissionTo('Read_' . $permission) && $view_url != '') {
-            $action .= '<a class="dropdown-item" title="View" href="' . $view_url . '"><i class="fa-solid fa-eye m-r-5"></i> View</a>';
+            foreach ($roles as $role) {
+                if ($user->hasPermissionTo('Read_' . $role) && $view_url != '') {
+                    $action .= '<a class="dropdown-item" title="View" href="' . $view_url . '"><i class="fa-solid fa-eye m-r-5"></i> View</a>';
+                    break;
+                }
+            }
+
+        } else {
+            if ($edit_url != '' && $user->hasPermissionTo('Update_' . $permission)) {
+                $action .= '<a class="dropdown-item" title="Edit" href="' . $edit_url . '"><i class="fa-solid fa-pen-to-square m-r-5"></i> Edit</a>';
+            }
+
+            if ($user->hasPermissionTo('Delete_' . $permission)) {
+                $action .= '<a class="dropdown-item" title="Delete" href="javascript:;" onclick="deleteConfirmation(' . $route_id . ')" data-id="' . $route_id . '"><i class="fa-solid fas fa-trash m-r-5"></i> Delete</a>';
+            }
+
+            if ($user->hasPermissionTo('Read_' . $permission) && $view_url != '') {
+                $action .= '<a class="dropdown-item" title="View" href="' . $view_url . '"><i class="fa-solid fa-eye m-r-5"></i> View</a>';
+            }
         }
 
         return $action;
     }
 }
+
 
 if (!function_exists('action_btns2')) {
     function action_btns2($action, $user, $permission, $edit_url, $route_id,  $view_url,$item)

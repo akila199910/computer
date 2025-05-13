@@ -100,22 +100,23 @@ class UserManagementController extends Controller
                             </div>';
                 })
                 ->addColumn('action', function ($item) {
-                    // $user = Auth::user();
-                    // $edit_url = route('business.users.update.form', $item->ref_no);
-                    // $view_url = route('business.users.view_details', $item->ref_no);
+                    $user = Auth::user();
+                    $edit_url = route('business.users.update.form', $item->ref_no);
+                    $view_url = route('business.users.view_details', $item->ref_no);
 
-                    // $actions = '';
-                    // $actions .= action_btns($actions, $user, 'User', $edit_url, $item->id,  $view_url);
+                    $actions = '';
+                    $actions .= action_btns($actions, $user, 'User', $edit_url, $item->id,  $view_url);
 
-                    // $action = '<div class="dropdown dropdown-action">
-                    //     <a href="javascript:;" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    //         <i class="fa fa-ellipsis-v"></i>
-                    //     </a>
-                    // <div class="dropdown-menu dropdown-menu-end">'
-                    //     . $actions .
-                    //     '</div></div>';
+                    $action = '<div class="dropdown dropdown-action">
+                        <a href="javascript:;" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </a>
+                    <div class="dropdown-menu dropdown-menu-end">'
+                        . $actions .
+                        '</div>
+                        </div>';
 
-                    return '';
+                    return $action;
                 })
                 ->rawColumns(['action', 'status', 'profile', 'permissions'])
                 ->make(true);
@@ -130,7 +131,7 @@ class UserManagementController extends Controller
     {
         //Check User Permission
         $user = Auth::user();
-        $check_premission = user_permission_check($user, 'Create_User');
+        $check_premission = user_permission_check($user, 'Update_User');
 
         if ($check_premission == false) {
             return abort(403);
@@ -190,4 +191,70 @@ class UserManagementController extends Controller
         return response()->json($data);
     }
 
+    public function update_form(Request $request, $ref_no)
+    {
+        //Check User Permission
+        $user = Auth::user();
+        $check_premission = user_permission_check($user, 'Update_User');
+
+        if ($check_premission == false) {
+            return abort(403);
+        }
+        //END
+
+        $user = User::where('ref_no', $ref_no)->first();
+
+        if (!$user) {
+            return abort(404);
+        }
+
+        $action = ['Read', 'Create', 'Update', 'Delete'];
+        $permissions = [
+            'Reception', 'Manager', 'Technician', 'Customer', 'Order', 'Category', 'Brand', 'Product',
+        ];
+
+        $permission_list = [];
+
+        foreach ($permissions as $perm) {
+            $permission_list[$perm] = [];
+            foreach ($action as $act) {
+                $permission_list[$perm][] = $act . '_' . $perm;
+            }
+        }
+        $user_permission = $user->getDirectPermissions()->pluck('name')->toArray();
+
+        return view('business.users.update', [
+            'permissions' => $permissions,
+            'permission_list' => $permission_list,
+            'user_permission' => $user_permission,
+            'user' => $user
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        $id = $request->id;
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'first_name' => 'required|regex:/^[a-z A-Z]+$/u|max:30',
+                'last_name' => 'required|regex:/^[a-z A-Z]+$/u|max:30',
+                'email' => 'required|email:rfc,dns|max:190|unique:users,email,' . $id . ',id,deleted_at,NULL',
+                'contact' => 'required|digits:10|unique:users,contact,' . $id . ',id,deleted_at,NULL',
+                'permissions' => 'nullable',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['status' => false,  'message' => $validator->errors()]);
+        }
+
+        $data = $this->user_repo->update_users($request);
+
+        $data['status'] = true;
+        $data['message'] = 'Selected User Updated Successfully!';
+        $data['route'] = route('business.users');
+
+        return response()->json($data);
+    }
 }

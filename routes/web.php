@@ -37,10 +37,10 @@ Route::middleware(['auth', 'UserExist'])->group(function () {
         Route::get('/users', [UserManagementController::class, 'index'])->name('business.users');
         Route::get('/users/create', [UserManagementController::class, 'create_form'])->name('business.users.create.form');
         Route::post('/users/create', [UserManagementController::class, 'create'])->name('business.users.create');
-        Route::get('/brands/update/{id}', [BrandController::class, 'update_form'])->name('business.brands.update.form');
-        Route::post('/brands/update', [BrandController::class, 'update'])->name('business.brands.update');
-        Route::post('/brands/delete', [BrandController::class, 'delete'])->name('business.brands.delete');
-        Route::get('/brands/view/{ref_no}', [BrandController::class, 'view_details'])->name('business.brands.view_details');
+        Route::get('/users/update/{id}', [UserManagementController::class, 'update_form'])->name('business.users.update.form');
+        Route::post('/users/update', [UserManagementController::class, 'update'])->name('business.users.update');
+        Route::post('/users/delete', [UserManagementController::class, 'delete'])->name('business.users.delete');
+        Route::get('/users/view/{ref_no}', [UserManagementController::class, 'view_details'])->name('business.users.view_details');
     });
 
     Route::get('/brands', [BrandController::class, 'index'])->name('business.brands');

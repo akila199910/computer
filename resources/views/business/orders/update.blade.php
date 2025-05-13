@@ -72,7 +72,7 @@
                                 <div class="input-block local-forms">
                                     <label>Price <span class="login-danger"> </span></label>
                                     <input type="text" name="price" class="form-control number_only_val" id="price"
-                                        maxlength="190">
+                                        maxlength="190" value="{{ $order->total_cost }}">
                                     <small class="text-danger font-weight-bold err_price"></small>
                                 </div>
                             </div>
