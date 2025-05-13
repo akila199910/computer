@@ -37,6 +37,37 @@
                         </div>
                     </div>
 
+                    <div class="staff-search-table">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 ml-2 mr-2">
+                            <div class="row">
+
+                                <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3">
+                                    <div class="input-block local-forms ">
+                                        <label>Status</label>
+                                        <select class="form-control" name="status" id="status">
+                                            <option value="">All  status</option>
+                                            <option value="0">Pending</option>
+                                            <option value="1">Approved</option>
+                                            <option value="2">Completed</option>
+                                            <option value="3">Cancelled</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3">
+                                    <div class="input-block local-forms">
+                                        <label>Order Date</label>
+                                        <input type="date" name="order_date"   class="form-control datepicker " id="order_date">
+                                    </div>
+                                </div>
+
+                            </div>
+                                <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3"></div>
+                                <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3"></div>
+
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table class="table table-stripped " id="data_table">
                             <thead>
@@ -67,7 +98,12 @@
         var table;
 
         $(document).ready(function() {
-            loadData()
+
+            loadData();
+
+            $('#status, #order_date').on('change', function () {
+                table.ajax.reload();
+            });
         });
 
         function loadData() {
@@ -80,7 +116,9 @@
                 ajax: {
                     url: "{{ route('business.order') }}",
                     data: function(d) {
-                        d.json = 1
+                        d.json = 1;
+                        d.status = $('#status').val();
+                        d.order_date = $('#order_date').val();
                     }
                 },
                 columns: [{
@@ -93,26 +131,25 @@
                         data: 'job_no',
                         name: 'job_no',
                         orderable: false,
-                        searchable: true
                     },
                     {
                         data: 'customer',
-                        name: 'customer.name',
+                        name: 'customer_info.name',
                         orderable: false,
                     },
                     {
                         data: 'technician',
-                        name: 'technician.name',
+                        name: 'technician_info.name',
                         orderable: false,
                     },
                     {
                         data: 'created_by',
-                        name: 'created_by.name',
+                        name: 'created_by_info.name',
                         orderable: false,
                     },
                     {
                         data: 'approved_by',
-                        name: 'approved_by.name',
+                        name: 'approved_by_info.name',
                         orderable: false,
                     },
                     {
@@ -257,15 +294,16 @@
                         }
                     },
 
-                    cancel: {
-                        text: 'Cancel',
-                        btnClass: 'btn-red',
-                        action: function() {
+                        cancel: {
+                            text: 'Cancel',
+                            btnClass: 'btn-red',
+                            action: function() {
 
+                            }
                         }
-                    }
-        }
+            }
     });
+
 }
-    </script>
+</script>
 @endsection

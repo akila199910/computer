@@ -99,9 +99,7 @@
                             <div class="col-12 col-md-12 col-xl-12">
                                 <div class="input-block local-forms">
                                     <label for="description">Description </label>
-                                    <textarea name="description" id="description" class="form-control description" rows="4">
-                                        {{ $product->description }}
-                                    </textarea>
+                                    <textarea name="description" id="description" class="form-control description" rows="4">{{ $product->description }}</textarea>
                                     <small class="text-danger font-weight-bold err_description"></small>
                                 </div>
                             </div>
@@ -140,6 +138,16 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
+            });
+
+            $('#brand_name').select2({
+                placeholder: "-- Select Brand --",
+                allowClear: true
+            });
+
+            $('#category_name').select2({
+                placeholder: "-- Select Category --",
+                allowClear: true
             });
 
             $('#submitForm').submit(function(e) {

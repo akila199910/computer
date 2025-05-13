@@ -131,6 +131,16 @@
                 }
             });
 
+            $('#brand_name').select2({
+                placeholder: "-- Select Brand --",
+                allowClear: true
+            });
+
+            $('#category_name').select2({
+                placeholder: "-- Select Category --",
+                allowClear: true
+            });
+
             $('#submitForm').submit(function(e) {
                 e.preventDefault();
                 let formData = new FormData($('#submitForm')[0]);

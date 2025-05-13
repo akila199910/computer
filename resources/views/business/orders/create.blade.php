@@ -82,7 +82,7 @@
                                 </div>
                             </div>
 
-                                @if (Auth::user()->hasPermissionTo('Create_Product'))
+                                @if (Auth::user()->hasPermissionTo('Create_Order'))
                                     <div class="col-12">
                                         <div class="doctor-submit text-end">
                                             <button type="submit"

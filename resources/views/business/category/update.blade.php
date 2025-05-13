@@ -103,6 +103,11 @@
                 }
             });
 
+            $('#brand_name').select2({
+                placeholder: "-- Select Brand --",
+                allowClear: true
+            });
+
             $('#submitForm').submit(function(e) {
                 e.preventDefault();
                 let formData = new FormData($('#submitForm')[0]);

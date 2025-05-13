@@ -41,13 +41,21 @@ class OrderController extends Controller
 
             $orders = $this->order_repo->getOrder();
 
+            if($user->hasRole('technician')) {
+                $orders = $orders->where('technician_id', $user->id);
+            }
+
+                if ($request->filled('status')) {
+                    $orders->where('status', $request->status);
+                }
+
+                if ($request->filled('order_date')) {
+                    $orders->whereDate('order_date', $request->order_date);
+                }
 
             $data =  DataTables()::of($orders)
                 ->addIndexColumn()
 
-                ->addColumn('job_no', function ($item) {
-                    return  Str::limit(ucwords($item->job_no), 30);
-                })
                 ->addColumn('customer', function ($item) {
                     return  Str::limit(ucwords($item->customer_info? $item->customer_info->name : "N/A"), 30);
                 })
@@ -100,7 +108,7 @@ class OrderController extends Controller
 
                     return $action;
                 })
-                ->rawColumns(['action', 'status', 'job_no', 'customer', 'technician', 'created_by','approved_by','description'])
+                ->rawColumns(['action', 'status', 'customer', 'technician', 'created_by','approved_by','description'])
                 ->make(true);
 
                 // dd($data);
