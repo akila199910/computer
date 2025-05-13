@@ -65,18 +65,18 @@ class OrderController extends Controller
                 })
                 ->addColumn('status', function ($item) {
                     if ($item->status == 0) {
-                        return '<span class="badge badge-soft-danger badge-border">Pending</span>';
+                        return '<span class="badge badge-soft-warning badge-border">Pending</span>';
                     }
 
                     if ($item->status == 1) {
-                        return '<span class="badge badge-soft-success badge-border">Approved</span>';
+                        return '<span class="badge badge-soft-primary badge-border">Approved</span>';
                     }
 
                     if ($item->status == 2) {
                         return '<span class="badge badge-soft-success badge-border">Completed</span>';
                     }
                     if ($item->status == 3) {
-                        return '<span class="badge badge-soft-success badge-border">Cancelled</span>';
+                        return '<span class="badge badge-soft-danger badge-border">Cancelled</span>';
                     }
                 })
                 ->addColumn('total_cost', function ($item) {

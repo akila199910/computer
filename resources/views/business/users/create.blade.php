@@ -111,7 +111,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-12">
+            <div class="col-sm-12" id="permission_div">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -152,14 +152,14 @@
                                 <small class="text-danger font-weight-bold err_permissions"></small>
                             </div>
 
-                            {{-- @if (Auth::user()->hasPermissionTo('Create_User')) --}}
+                            @if (Auth::user()->hasAnyPermission(['Create_Reception', 'Create_Manager','Create_Technician','Create_Customer']))
                                 <div class="col-12">
                                     <div class="doctor-submit text-end">
                                         <button type="submit"
                                             class="btn btn-primary text-uppercase submit-form me-2">Save</button>
                                     </div>
                                 </div>
-                            {{-- @endif --}}
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -243,6 +243,23 @@
 
         });
 
+        function hidePermissionDiv(state) {
+            if (state == true) {
+                $('#permission_div').show();
+
+            }else{
+                $('#permission_div').hide();
+            }
+        }
+
+        $('#role').change(function () {
+            const selected = $(this).val();
+            if (selected === 'customer') {
+                hidePermissionDiv(false);
+            } else {
+                hidePermissionDiv(true); 
+            }
+        });
 
         $('.permissions_check').change(function() {
             if ($(this).is(':checked')) {

@@ -90,19 +90,19 @@ if (!function_exists('action_btns2')) {
             $action .= '<a class="dropdown-item" title="Delete" href="javascript:;" onclick="deleteConfirmation(' . $route_id . ')" data-id="' . $route_id . '"><i class="fa-solid fas fa-trash m-r-5"></i> Delete</a>';
         }
 
-        if ($user->hasPermissionTo('Read_' . $permission) && $item->status == 0) {
+        if ($user->hasPermissionTo('Update_' . $permission) && $item->status == 0) {
             $action .= '<a class="dropdown-item" title="Approve"  href="javascript:;" onclick="orderStatus(' . $item->id . ',1)" data-id="' . $item->id . '"><i class="fa-solid fas fa-check m-r-5"></i> Approve</a>';
         }
 
-        if ($user->hasPermissionTo('Read_' . $permission) && $item->status == 1) {
+        if ($user->hasPermissionTo('Update_' . $permission) && $item->status == 1) {
             $action .= '<a class="dropdown-item" title="Complete"  href="javascript:;" onclick="orderStatus(' . $item->id . ',2)" data-id="' . $item->id . '"><i class="fa-solid fas fa-check m-r-5"></i> Complete</a>';
         }
 
-        if ($user->hasPermissionTo('Read_' . $permission) && $item->status == 0) {
+        if ($user->hasPermissionTo('Update_' . $permission) && $item->status == 0) {
             $action .= '<a class="dropdown-item" title="Cancel"  href="javascript:;" onclick="orderStatus(' . $item->id . ',3)" data-id="' . $item->id . '"><i class="fa-solid fas fa-times m-r-5"></i>Cancel</a>';
         }
 
-        if ($user->hasPermissionTo('Read_' . $permission) && $view_url != '') {
+        if ($user->hasPermissionTo('Update_' . $permission) && $view_url != '') {
             $action .= '<a class="dropdown-item" title="View" href="' . $view_url . '"><i class="fa-solid fa-eye m-r-5"></i> View</a>';
         }
 
