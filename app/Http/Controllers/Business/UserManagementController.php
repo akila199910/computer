@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
+use Yajra\DataTables\DataTables;
 
 class UserManagementController extends Controller
 {
@@ -60,7 +60,7 @@ class UserManagementController extends Controller
                         ->get();
 
 
-            $data =  datatables()::of($users)
+            $data =  DataTables()::of($users)
                 ->addIndexColumn()
                 ->addColumn('profile', function ($item) {
                     $url = config('aws_url.url') . ($item->UserProfile->profile);
@@ -167,7 +167,7 @@ class UserManagementController extends Controller
                 'last_name' => 'required|regex:/^[a-z A-Z]+$/u|max:30',
                 'email' => 'required|email:rfc,dns|max:190|unique:users,email,NULL,id,deleted_at,NULL',
                 'contact' => 'required|digits:10|unique:users,contact,NULL,id,deleted_at,NULL',
-                'permissions' => 'required',
+                'permissions' => 'nullable',
                 'role' => 'required'
             ]
         );

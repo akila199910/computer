@@ -1,7 +1,7 @@
 @extends('layouts.business')
 
 @section('title')
-Manage Products
+Manage Orders
 @endsection
 
 @section('content')
@@ -9,13 +9,13 @@ Manage Products
         <div class="row">
             <div class="col-sm-8">
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('business.product') }}">Manage Products</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('business.order') }}">Manage Orders</a></li>
                     <li class="breadcrumb-item"><i class="feather-chevron-right"></i></li>
-                    <li class="breadcrumb-item active">Product Details</li>
+                    <li class="breadcrumb-item active">Order Details</li>
                 </ul>
             </div>
             <div class="col-sm-4 text-end">
-                <a href="{{ route('business.product') }}" class="btn btn-primary btn-lg me-2" style='width:100px'>Back</a>
+                <a href="{{ route('business.order') }}" class="btn btn-primary btn-lg me-2" style='width:100px'>Back</a>
             </div>
         </div>
     </div>
@@ -30,36 +30,40 @@ Manage Products
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="doctor-table-blk mb-4 pt-2">
-                                            <h3 class="text-uppercase">Product Details</h3>
+                                            <h3 class="text-uppercase">Order Details</h3>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-xl-6 col-md-6 mb-3">
                                                 <div class="detail-personal">
-                                                    <h2>Product Name</h2>
-                                                    <h3>{{ ucwords($product->name) }}</h3>
+                                                    <h2>Order Job No</h2>
+                                                    <h3>{{ ucwords($order->job_no) }}</h3>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6 col-md-6 mb-3">
                                                 <div class="detail-personal">
-                                                    <h2>Brand Name</h2>
-                                                    <h3>{{ ucwords($product->brand->name ?? "N/A") }}</h3>
+                                                    <h2>Customer Name</h2>
+                                                    <h3>{{ ucwords($order->customer_info->name ?? "N/A") }}</h3>
                                                 </div>
                                             </div>
                                             <div class="col-xl-6 col-md-6 mb-3">
                                                 <div class="detail-personal">
-                                                    <h2>Category</h2>
-                                                    <h3>{{ ucwords($product->category->name ?? "N/A") }}</h3>
+                                                    <h2>Total Cost</h2>
+                                                    <h3>{{ ucwords($order->total_cost ?? "N/A") }}</h3>
                                                 </div>
                                             </div>
 
-                                            <div class="col-12 col-md-12 col-xl-12">
+                                            <div class="col-xl-6 col-md-6 mb-3">
                                                 <div class="detail-personal">
-                                                    <h2>Description</h2>
+                                                    <h2>Order Date</h2>
+                                                    <h3>{{ ucwords($order->order_date ?? "N/A") }}</h3>
+                                                </div>
+                                            </div>
 
-                                                    <textarea name="description" id="description" class="form-control description" rows="4" readonly>
-                                                        {{ $product->description }}
-                                                    </textarea>
+                                            <div class="col-xl-6 col-md-6 mb-3">
+                                                <div class="detail-personal">
+                                                    <h2>Technician Name</h2>
+                                                    <h3>{{ ucwords($order->technician_info->name ?? "N/A") }}</h3>
                                                 </div>
                                             </div>
 
@@ -67,23 +71,26 @@ Manage Products
                                                 <div class="detail-personal">
                                                     <h2>Status </h2>
                                                     <h3>
-                                                        @if ($product->status == 1)
-                                                            <span class="custom-badge status-green ">Active</span>
+                                                        @if ($order->status == 0)
+                                                            <span class="badge badge-warning">Pending</span>
+                                                        @elseif ($order->status == 1)
+                                                            <span class="badge badge-success">Approved</span>
+                                                        @elseif ($order->status == 2)
+                                                            <span class="badge badge-danger">Completed</span>
                                                         @else
-                                                            <span class="custom-badge status-red ">Inactive</span>
+                                                            <span class="badge badge-danger">Cancelled</span>
                                                         @endif
                                                     </h3>
                                                 </div>
                                             </div>
+                                            
+                                            <div class="col-12 col-md-12 col-xl-12 mb-3">
+                                                <div class="detail-personal">
+                                                    <h2>Description</h2>
 
-                                            @if ($product->image !== 'user/user.png')
-                                                <div class="col-xl-6 col-md-12 mb-3">
-                                                    <div class="detail-personal">
-                                                        <h2>Image</h2>
-                                                        <img src="{{ asset($product->image) }}" alt="image" class="w-50 mb-3 rounded" >
-                                                    </div>
+                                                    <textarea name="description" id="description" class="form-control description" rows="4" readonly>{{ $order->description }}</textarea>
                                                 </div>
-                                            @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

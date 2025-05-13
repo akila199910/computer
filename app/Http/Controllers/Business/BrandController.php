@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Yajra\DataTables\DataTables;
 
 class BrandController extends Controller
 {
@@ -43,7 +44,7 @@ class BrandController extends Controller
 
 
 
-            $data =  datatables()::of($brands)
+            $data =  DataTables()::of($brands)
                 ->addIndexColumn()
                 ->addColumn('profile', function ($item) {
                     $url = config('aws_url.url') . ($item->image);

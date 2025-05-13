@@ -138,7 +138,7 @@
                                 <span class="menu-side">
                                     <img src="{{ asset('layout_style/img/icons/user.png') }}" style="width: 24px" alt>
                                 </span>
-                                <span>Brand</span>
+                                <span>Brands</span>
                             </a>
                         </li>
                         @endif
@@ -150,7 +150,7 @@
                                 <span class="menu-side">
                                     <img src="{{ asset('layout_style/img/icons/user.png') }}" style="width: 24px" alt>
                                 </span>
-                                <span>Category</span>
+                                <span>Categories</span>
                             </a>
                         </li>
                         @endif
@@ -164,12 +164,22 @@
                                 <span class="menu-side">
                                     <img src="{{ asset('layout_style/img/icons/user.png') }}" style="width: 24px" alt>
                                 </span>
-                                <span>Product</span>
+                                <span>Products</span>
                             </a>
                         </li>
                     @endif
 
-
+                    @if (Auth::user()->hasPermissionTo('Read_Order'))
+                        <li>
+                            <a href="{{ route('business.order') }}"
+                            class="">
+                                <span class="menu-side">
+                                    <img src="{{ asset('layout_style/img/icons/user.png') }}" style="width: 24px" alt>
+                                </span>
+                                <span>Orders</span>
+                            </a>
+                        </li>
+                    @endif
 
             </ul>
 

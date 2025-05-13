@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Business\BrandController;
 use App\Http\Controllers\Business\CategoryController;
+use App\Http\Controllers\Business\OrderController;
 use App\Http\Controllers\Business\ProductController;
 use App\Http\Controllers\Business\UserManagementController;
 use App\Http\Controllers\DashboardController;
@@ -65,8 +66,18 @@ Route::middleware(['auth', 'UserExist'])->group(function () {
     Route::post('/products/create', [ProductController::class, 'create'])->name('business.product.create');
     Route::get('/products/update/{id}', [ProductController::class, 'update_form'])->name('business.product.update.form');
     Route::post('/products/update', [ProductController::class, 'update'])->name('business.product.update');
-    Route::post('/products/delete', [BrandController::class, 'delete'])->name('business.product.delete');
+    Route::post('/products/delete', [ProductController::class, 'delete'])->name('business.product.delete');
     Route::get('/products/view/{ref_no}', [ProductController::class, 'view_details'])->name('business.product.view_details');
+
+    Route::get('/orders', [OrderController::class, 'index'])->name('business.order');
+    Route::get('/orders/create', [OrderController::class, 'create_form'])->name('business.order.create.form');
+    Route::post('/orders/create', [OrderController::class, 'create'])->name('business.order.create');
+    Route::get('/orders/update/{id}', [OrderController::class, 'update_form'])->name('business.order.update.form');
+    Route::post('/orders/update', [OrderController::class, 'update'])->name('business.order.update');
+    Route::post('/orders/delete', [OrderController::class, 'delete'])->name('business.order.delete');
+    Route::get('/orders/view/{ref_no}', [OrderController::class, 'view_details'])->name('business.order.view_details');
+    Route::post('/orders/change', [OrderController::class, 'change'])->name('business.order.change');
+
 
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
