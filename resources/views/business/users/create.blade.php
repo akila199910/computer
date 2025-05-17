@@ -152,6 +152,11 @@
                                 <small class="text-danger font-weight-bold err_permissions"></small>
                             </div>
 
+
+                        </div>
+                    </div>
+                </div>
+            </div>
                             @if (Auth::user()->hasAnyPermission(['Create_Reception', 'Create_Manager','Create_Technician','Create_Customer']))
                                 <div class="col-12">
                                     <div class="doctor-submit text-end">
@@ -160,10 +165,6 @@
                                     </div>
                                 </div>
                             @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
         </form>
     </div>
 @endsection
@@ -257,7 +258,7 @@
             if (selected === 'customer') {
                 hidePermissionDiv(false);
             } else {
-                hidePermissionDiv(true); 
+                hidePermissionDiv(true);
             }
         });
 
